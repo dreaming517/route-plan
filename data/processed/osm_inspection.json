@@ -1,0 +1,93 @@
+{
+  "source_file": "district-of-columbia-261011.osm.pbf",
+  "source_size_bytes": 21027411,
+  "created_utc": "2026-10-12T11:54:49.958841+00:00",
+  "counts": {
+    "osm_nodes": 1957486,
+    "osm_ways": 285365,
+    "osm_relations": 5273,
+    "highway_tagged_ways": 95103,
+    "restriction_relations": 2081
+  },
+  "highway_types": {
+    "footway": 56114,
+    "service": 17962,
+    "residential": 5713,
+    "primary": 2931,
+    "cycleway": 2277,
+    "secondary": 2245,
+    "tertiary": 2097,
+    "steps": 1739,
+    "path": 824,
+    "motorway": 527,
+    "trunk": 498,
+    "motorway_link": 487,
+    "unclassified": 482,
+    "primary_link": 322,
+    "pedestrian": 306,
+    "proposed": 128,
+    "secondary_link": 77,
+    "trunk_link": 75,
+    "tertiary_link": 52,
+    "living_street": 48,
+    "track": 47,
+    "bridleway": 46,
+    "construction": 38,
+    "corridor": 35,
+    "platform": 26,
+    "elevator": 6,
+    "no": 1
+  },
+  "oneway_tags_on_highway_ways": {
+    "<missing>": 83713,
+    "yes": 9932,
+    "no": 1449,
+    "-1": 6,
+    "reversible": 3
+  },
+  "maxspeed_presence_on_highway_ways": {
+    "missing": 88722,
+    "present": 6381
+  },
+  "access_tags_on_highway_ways": {
+    "<missing>": 90530,
+    "private": 3748,
+    "customers": 295,
+    "no": 228,
+    "yes": 120,
+    "destination": 83,
+    "permissive": 76,
+    "permit": 11,
+    "designated": 6,
+    "discouraged": 5,
+    "unknown": 1
+  },
+  "motor_vehicle_tags_on_highway_ways": {
+    "<missing>": 93952,
+    "no": 771,
+    "yes": 196,
+    "private": 89,
+    "destination": 41,
+    "designated": 21,
+    "permit": 13,
+    "permissive": 12,
+    "discouraged": 5,
+    "customers": 3
+  },
+  "restriction_types": {
+    "no_left_turn": 867,
+    "no_u_turn": 446,
+    "<missing>": 346,
+    "no_right_turn": 224,
+    "only_straight_on": 109,
+    "only_right_turn": 56,
+    "no_straight_on": 26,
+    "only_left_turn": 6,
+    "no_right_turn_on_red": 1
+  },
+  "notes": [
+    "OSM ways are not yet routing edges; intersections and topology have not been constructed.",
+    "Missing oneway does not always mean bidirectional; roundabouts and road classes need special handling.",
+    "The counts include non-drivable highway categories; motor-car access filtering is a later step."
+  ]
+}

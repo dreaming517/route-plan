@@ -11,6 +11,7 @@
 from __future__ import annotations
 
 import json
+import os
 from pathlib import Path
 
 from fastapi import FastAPI, HTTPException
@@ -20,7 +21,7 @@ from pydantic import BaseModel, Field
 from path_planning import CostModel, Graph, NoRouteError, Preference, load_graphml, plan_route
 
 ROOT = Path(__file__).resolve().parent.parent
-GRAPHML_PATH = ROOT / "data" / "campus_552.graphml"
+GRAPHML_PATH = ROOT / os.environ.get("ROUTE_GRAPHML", "data/campus_552.graphml")
 WEB_DIR = ROOT / "web"
 
 app = FastAPI(
@@ -81,7 +82,8 @@ def meta() -> dict:
 
     graph = get_graph()
     return {
-        "graph_version": "campus-552-v1",
+        "graph_version": ("campus-552-v1" if GRAPHML_PATH.name == "campus_552.graphml"
+                          else GRAPHML_PATH.stem),
         "source": str(GRAPHML_PATH.name),
         "node_count": len(graph.nodes),
         "edge_count": len(graph.edges),

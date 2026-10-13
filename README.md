@@ -113,3 +113,21 @@ workspaces/          五个角色的成果区
 
 > 路网数据来自 **OpenStreetMap**（ODbL 1.0，© OpenStreetMap contributors）。
 > 本项目自研代码与文档采用 MIT 许可，详见 [`LICENSE`](LICENSE)。
+
+## 华盛顿特区 OSM 路网（可选）
+
+默认仍为原校园路网。新增的华盛顿驾驶路网由 Geofabrik OSM PBF 转换而来，
+经验证包含 41,570 个节点、99,193 条有向边。
+
+在仓库根目录的 PowerShell 中启动华盛顿数据：
+
+```powershell
+$env:ROUTE_GRAPHML="data/processed/dc_driving_optimized.graphml"
+.\.venv\Scripts\python.exe -m uvicorn api.main:app --port 8077
+```
+
+新建终端或移除环境变量后，默认配置继续读取 `data/campus_552.graphml`。
+数据来源、转换命令和限制见
+[`华盛顿OSM路网数据处理与系统适配说明`](docs/development/华盛顿OSM路网数据处理与系统适配说明.md)。
+转换脚本依赖 `osmium`（通过 `uv pip install --python .venv/Scripts/python.exe osmium` 安装），
+核心路径搜索包仍然只依赖 Python 标准库。
