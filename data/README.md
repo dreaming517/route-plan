@@ -11,7 +11,6 @@
 | 数据集 | 文件 | 规模 | 用途 |
 |---|---|---|---|
 | 校园路网 | [`campus_552.graphml`](campus_552.graphml) | 552 节点 / 1400 有向边 | 作业 1 的真实路网基础 |
-| 华盛顿特区驾驶路网 | [`processed/dc_driving_optimized.graphml`](processed/dc_driving_optimized.graphml) | 41,570 节点 / 99,193 有向边 | 可选的大路网算法与可视化实验 |
 
 ---
 
@@ -84,11 +83,3 @@
 那个目录里的 `graph.graphml` 是**下载脚本的原始产出**，与 `data/campus_552.graphml` 内容相同。
 
 **正式使用请读 `data/campus_552.graphml`。** 脚本产出目录保留为生成过程的痕迹。
-
-## 华盛顿特区路网（可选数据集）
-
-- 来源：Geofabrik 提供的 OpenStreetMap 美国 District of Columbia 区域数据（ODbL 1.0）。
-- 原始输入：`raw/district-of-columbia-261011.osm.pbf`；最终输入：`processed/dc_driving_optimized.graphml`。
-- 使用 `tools/inspect_osm.py` 统计，`tools/convert_dc_osm_optimized.py` 构图，`tools/validate_dc_network.py` 验证。
-- 转换规则、运行命令、实际验证结果及尚未实现的转向限制，详见 `docs/development/华盛顿OSM路网数据处理与系统适配说明.md`。
-- 原有 `campus_552.graphml`、`graph_meta.json` 不覆盖。此处 `graph_meta.json` 仍描述校园数据。

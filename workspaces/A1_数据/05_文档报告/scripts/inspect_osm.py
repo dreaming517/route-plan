@@ -1,4 +1,4 @@
-"""只读统计 Geofabrik OSM PBF，生成道路标签概况。依赖：osmium。"""
+﻿"""只读统计 Geofabrik OSM PBF，生成道路标签概况。依赖：osmium。"""
 from __future__ import annotations
 
 import argparse
@@ -54,7 +54,7 @@ def ranked(c: Counter) -> dict[str, int]:
 def main():
     parser = argparse.ArgumentParser(description='Inspect OSM PBF without modifying it')
     parser.add_argument('pbf', type=Path, help='Path to input .osm.pbf')
-    parser.add_argument('--output', type=Path, default=Path('data/processed/osm_inspection.json'))
+    parser.add_argument('--output', type=Path, default=Path('workspaces/A1_数据/03_数据质量/osm_inspection.json'))
     args = parser.parse_args()
 
     if not args.pbf.is_file():
@@ -107,3 +107,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+

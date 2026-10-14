@@ -1,7 +1,7 @@
 {
-  "input": "C:\\Users\\17742\\Desktop\\route-plan-github\\data\\processed\\dc_driving_optimized.graphml",
-  "generated_utc": "2026-10-13T05:09:56.713438+00:00",
-  "load_seconds": 2.483,
+  "input": "C:\\Users\\17742\\Desktop\\route-plan-github\\workspaces\\A1_数据\\01_路网清单\\processed\\dc_driving_optimized.graphml",
+  "generated_utc": "2026-10-14T02:16:49.841308+00:00",
+  "load_seconds": 2.433,
   "node_count": 41570,
   "edge_count": 99193,
   "connected": {
@@ -50,7 +50,7 @@
         "duration_s": 1681.7264504293073,
         "expanded_states": 95906,
         "queue_pushes": 95953,
-        "planning_ms": 744.7309000126552,
+        "planning_ms": 802.9958000115585,
         "path_node_count": 352,
         "path_edge_count": 351
       },
@@ -61,7 +61,7 @@
         "duration_s": 1681.7264504293073,
         "expanded_states": 28759,
         "queue_pushes": 30580,
-        "planning_ms": 342.2514000121737,
+        "planning_ms": 366.83070001890883,
         "path_node_count": 352,
         "path_edge_count": 351
       },
@@ -78,7 +78,7 @@
         "duration_s": 1434.7754508622772,
         "expanded_states": 95763,
         "queue_pushes": 95937,
-        "planning_ms": 959.5835999934934,
+        "planning_ms": 957.4868000054266,
         "path_node_count": 247,
         "path_edge_count": 246
       },
@@ -89,7 +89,7 @@
         "duration_s": 1434.7754508622772,
         "expanded_states": 87254,
         "queue_pushes": 88570,
-        "planning_ms": 1311.4841999922646,
+        "planning_ms": 1029.7543000197038,
         "path_node_count": 247,
         "path_edge_count": 246
       },
@@ -106,7 +106,7 @@
         "duration_s": 1503.8036401454383,
         "expanded_states": 96047,
         "queue_pushes": 96105,
-        "planning_ms": 1207.3980999994092,
+        "planning_ms": 840.5631999776233,
         "path_node_count": 302,
         "path_edge_count": 301
       },
@@ -117,7 +117,7 @@
         "duration_s": 1503.8036401454383,
         "expanded_states": 37240,
         "queue_pushes": 38515,
-        "planning_ms": 664.7471000032965,
+        "planning_ms": 416.8874000024516,
         "path_node_count": 302,
         "path_edge_count": 301
       },
@@ -134,7 +134,7 @@
         "duration_s": 1434.9252959562393,
         "expanded_states": 87493,
         "queue_pushes": 88029,
-        "planning_ms": 1173.1734000059078,
+        "planning_ms": 794.3846999842208,
         "path_node_count": 239,
         "path_edge_count": 238
       },
@@ -145,7 +145,7 @@
         "duration_s": 1434.9252959562393,
         "expanded_states": 74288,
         "queue_pushes": 75371,
-        "planning_ms": 1111.0901000065496,
+        "planning_ms": 761.3990000099875,
         "path_node_count": 239,
         "path_edge_count": 238
       },

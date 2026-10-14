@@ -1,4 +1,4 @@
-"""Validate a converted OSM GraphML using the existing path_planning engine.
+﻿"""Validate a converted OSM GraphML using the existing path_planning engine.
 
 Run from the repository root:
   python tools/validate_dc_network.py
@@ -16,7 +16,7 @@ from statistics import median
 import sys
 from time import perf_counter
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[4]
 sys.path.insert(0, str(ROOT / 'src'))
 from path_planning.osm_loader import load_graphml
 from path_planning.costs import CostModel, Preference
@@ -95,8 +95,8 @@ def choose_pair(graph, group):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--input', default='data/processed/dc_driving.graphml')
-    parser.add_argument('--output', default='data/processed/dc_validation.json')
+    parser.add_argument('--input', default='workspaces/A1_数据/01_路网清单/processed/dc_driving_optimized.graphml')
+    parser.add_argument('--output', default='workspaces/A1_数据/03_数据质量/dc_validation_optimized.json')
     parser.add_argument('--max-checks', type=int, default=2, help='Number of test pairs in largest SCC; default 2')
     args = parser.parse_args()
     path = ROOT / args.input
@@ -217,3 +217,6 @@ def main():
 
 if __name__ == '__main__':
     main()
+
+
+

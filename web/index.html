@@ -137,7 +137,6 @@ const state = {
   result: null, trace: null,
   step: 0, total: 0, playing: false, timer: null,
   pathLayer: null, frontierSet: new Set(),
-  largeGraph: false, lons: [], lats: [], picks: [], frames: [],
 };
 
 const COLORS = { base: "#5a6b85", visited: "#38455c", frontier: "#ff9d3d", path: "#37d67a" };
@@ -156,85 +155,6 @@ function fmt(v, unit, digits = 1) {
   return (v === null || v === undefined) ? "—" : v.toFixed(digits) + " " + unit;
 }
 
-// 大图采用单个 Canvas 图层；校园小图继续沿用原有 CircleMarker 动画。
-const searchCanvas = L.layerGroup().addTo(map);
-let canvasLayer = null;
-function clearLargeCanvas() {
-  if (canvasLayer) { map.removeLayer(canvasLayer); canvasLayer = null; }
-}
-function redrawLargeCanvas() {
-  if (!canvasLayer || !state.trace) return;
-  const c = canvasLayer._canvas, size = map.getSize();
-  c.width = size.x; c.height = size.y;
-  L.DomUtil.setPosition(c, map.containerPointToLayerPoint([0, 0]));
-  const ctx = c.getContext("2d");
-  const tr = state.trace, actual = state.frames[state.step] ?? 0;
-  const visited = new Set(tr.pop_order.slice(0, actual));
-  const frontier = new Set();
-  for (let i = 0; i < tr.discovered_order.length; i++) {
-    if (tr.discovered_after_steps[i] <= actual && !visited.has(tr.discovered_order[i]))
-      frontier.add(tr.discovered_order[i]);
-  }
-  function paint(ids, color, radius, cap) {
-    ctx.fillStyle = color;
-    const stride = Math.max(1, Math.ceil(ids.size / cap)); let k = 0;
-    for (const id of ids) {
-      if (k++ % stride) continue;
-      const i = state.nodeIndex.get(id);
-      if (i === undefined) continue;
-      const pt = map.latLngToContainerPoint([state.lats[i], state.lons[i]]);
-      if (pt.x < 0 || pt.y < 0 || pt.x >= size.x || pt.y >= size.y) continue;
-      ctx.beginPath(); ctx.arc(pt.x, pt.y, radius, 0, Math.PI * 2); ctx.fill();
-    }
-  }
-  paint(visited, COLORS.base, 2, 5000);
-  paint(frontier, COLORS.frontier, 3, 3500);
-}
-function startLargeCanvas() {
-  const Layer = L.Layer.extend({
-    onAdd(m) {
-      this._canvas = L.DomUtil.create("canvas", "leaflet-zoom-hide");
-      this._canvas.style.pointerEvents = "none";
-      m.getPanes().overlayPane.appendChild(this._canvas);
-      m.on("moveend zoomend resize", redrawLargeCanvas);
-      redrawLargeCanvas();
-    },
-    onRemove(m) {
-      m.off("moveend zoomend resize", redrawLargeCanvas);
-      this._canvas.remove();
-    }
-  });
-  canvasLayer = new Layer().addTo(map);
-  redrawLargeCanvas();
-}
-function nearestNode(latlng) {
-  let id = null, best = Infinity;
-  const xScale = Math.cos(latlng.lat * Math.PI / 180);
-  for (let i = 0; i < state.nodeIds.length; i++) {
-    const dx = (state.lons[i] - latlng.lng) * xScale;
-    const dy = state.lats[i] - latlng.lat;
-    const d2 = dx * dx + dy * dy;
-    if (d2 < best) { best = d2; id = state.nodeIds[i]; }
-  }
-  return id;
-}
-map.on("click", e => {
-  if (state.largeGraph && state.nodeIds.length) onPickNode(nearestNode(e.latlng));
-});
-function renderLargePicks() {
-  for (const marker of state.picks) map.removeLayer(marker);
-  state.picks = [];
-  for (const [id, label] of [[state.src, "起点"], [state.dst, "终点"]]) {
-    if (id === null) continue;
-    const i = state.nodeIndex.get(id);
-    if (i === undefined) continue;
-    state.picks.push(L.circleMarker([state.lats[i], state.lons[i]], {
-      radius: 7, color: "#fff", weight: 2,
-      fillColor: COLORS.path, fillOpacity: 1
-    }).addTo(map).bindTooltip(label + " " + id));
-  }
-}
-
 // ── 初始化 ──────────────────────────────────────────────────────────────
 async function init() {
   try {
@@ -245,20 +165,11 @@ async function init() {
     const nodeRes = await fetch("/api/nodes");
     const nodes = await nodeRes.json();
     state.nodeIds = nodes.ids;
-    state.lons = nodes.lons; state.lats = nodes.lats;
-    state.largeGraph = nodes.ids.length > 3000;
     nodes.ids.forEach((id, i) => state.nodeIndex.set(id, i));
 
     const b = meta.bbox;
     map.fitBounds([[b.min_lat, b.min_lon], [b.max_lat, b.max_lon]], { padding: [20, 20] });
 
-    // 大图禁用逐节点 Marker；小图保留原有交互和动画。
-    if (state.largeGraph) {
-      startLargeCanvas();
-      document.querySelector("#side .hint").textContent = "地图点击两次选择起终点（自动吸附道路节点）";
-      el("err").textContent = "";
-      return;
-    }
     // 预建所有路口的圆点，之后只改样式、不重建——这是动画流畅的关键
     for (let i = 0; i < nodes.ids.length; i++) {
       const m = L.circleMarker([nodes.lats[i], nodes.lons[i]], {
@@ -288,7 +199,6 @@ function updatePickUI() {
   el("srcLabel").textContent = state.src ?? "未选择";
   el("dstLabel").textContent = state.dst ?? "未选择";
   el("btnRoute").disabled = !(state.src !== null && state.dst !== null);
-  if (state.largeGraph) { renderLargePicks(); return; }
   // 用路径色标出选中的起终点
   state.markers.forEach((m, i) => {
     const id = state.nodeIds[i];
@@ -315,7 +225,7 @@ async function plan() {
         algorithm: el("algorithm").value,
         preference: el("preference").value,
         trace: el("traceOn").checked,
-        max_steps: state.largeGraph ? 0 : 600,
+        max_steps: 600,
       }),
     });
     const data = await res.json();
@@ -327,20 +237,13 @@ async function plan() {
     drawFullPath();
 
     if (state.trace) {
-      if (state.largeGraph) {
-        const n = state.trace.pop_order.length;
-        const frames = Math.min(600, Math.max(1, n));
-        state.frames = Array.from({length: frames + 1}, (_, i) => Math.round(i * n / frames));
-        state.total = frames;
-      } else {
-        state.total = state.trace.pop_order.length;
-      }
+      state.total = state.trace.pop_order.length;
       el("scrub").max = state.total;
       setStep(0);
       el("btnPlay").disabled = false;
       el("btnReset").disabled = false;
     } else {
-      state.total = 0; state.frames = [];
+      state.total = 0;
       el("scrub").max = 0;
       setStep(0);
       el("btnPlay").disabled = true;
@@ -374,10 +277,6 @@ function drawFullPath() {
   if (state.pathLayer) { map.removeLayer(state.pathLayer); state.pathLayer = null; }
   const coords = state.result.geometry.map(p => [p[1], p[0]]);
   state.pathLayer = L.polyline(coords, { color: COLORS.path, weight: 5, opacity: 0.9 }).addTo(map);
-  // 与独立适配版保持一致：大路网规划后自动聚焦到实际路线。
-  if (state.largeGraph && coords.length > 1) {
-    map.fitBounds(state.pathLayer.getBounds(), { padding: [30, 30] });
-  }
 }
 
 // ── 动画 ────────────────────────────────────────────────────────────────
@@ -389,15 +288,6 @@ function setStep(step) {
 
   if (!state.trace) return;
   const tr = state.trace;
-  if (state.largeGraph) {
-    redrawLargeCanvas();
-    if (state.pathLayer) {
-      const show = tr.stats.goal_step !== null &&
-        (state.frames[step] ?? 0) >= tr.stats.goal_step + 1;
-      state.pathLayer.setStyle({opacity: show ? 0.9 : 0});
-    }
-    return;
-  }
   const visited = new Set(tr.pop_order.slice(0, step));
 
   // 重建当前边界
@@ -455,10 +345,6 @@ el("btnRoute").addEventListener("click", plan);
 el("btnClear").addEventListener("click", () => {
   state.src = state.dst = null;
   stopPlayback();
-  if (state.largeGraph) {
-    state.trace = null; state.frames = [];
-    redrawLargeCanvas();
-  }
   state.markers.forEach(m => m.setStyle({ fillColor: COLORS.base, fillOpacity: 0.55, radius: 3 }));
   state.frontierSet = new Set();
   if (state.pathLayer) { map.removeLayer(state.pathLayer); state.pathLayer = null; }
