@@ -1,0 +1,16 @@
+车辆导航可视化网页
+
+使用方式：
+1. 解压整个压缩包，并保持 index.html、app.js、styles.css 与 assets 文件夹的相对位置不变。
+2. Windows 用户可双击 start-server.bat 启动网页。
+3. 也可以在该文件夹内启动本地服务器：
+   python -m http.server 5173
+4. 浏览器打开：http://localhost:5173/
+
+注意：
+- 页面优先读取 data/wuhan-main-roads.json；没有本地路网时才请求 Overpass API。
+- 页面底图使用 Leaflet 与在线地图瓦片，区域搜索和在线路网回退需要联网。
+- 如需生成本地 OSM 小数据集，请运行：python tools/download_osm_network.py
+- OSM 数据来源为 OpenStreetMap，重新分发时请保留 ODbL 许可与版权署名。
+- 不需要安装或运行原始 Tkinter/Python 算法原型 app.py。
+- assets 文件夹中的图片用于四套皮肤，请不要单独移动或删除。
